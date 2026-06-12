@@ -1,58 +1,74 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Laravel Docker Boilerplate
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A ready-to-go, pre-configured Laravel 13 development environment running on PHP 8.5, MySQL 9.0, and phpMyAdmin. This repository contains the full framework setup alongside the Docker infrastructure.
 
-## About Laravel
+## 🌐 Local Access Links
+* **Laravel App:** [http://localhost:13000](http://localhost:13000)
+* **phpMyAdmin:** [http://localhost:13001](http://localhost:13001)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🚀 Quick Start Guide
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Follow these steps to spin up the existing project on any computer with Docker installed.
 
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
+### 1. Clone the Repository
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone https://github.com/Kartinov/laravel-docker-starter.git
+cd laravel-docker-starter
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### 2. Create Your Environment File
+Copy the existing example file to create your local `.env` configuration:
 
-## Contributing
+```bash
+cp .env.example .env
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Open the newly created `.env` file and make sure the database settings look like this to match the internal Docker network:
 
-## Code of Conduct
+```ini
+DB_CONNECTION=mysql
+DB_HOST=mysql
+DB_PORT=3306
+DB_DATABASE=laravel
+DB_USERNAME=root
+DB_PASSWORD=root
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 3. Build and Start the Containers
+Run this command to build your custom PHP image and start all services in the background:
 
-## Security Vulnerabilities
+```bash
+docker compose up -d --build
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 4. Install Composer Dependencies
+Since the vendor folder is gitignored, download Laravel's dependencies inside the container:
 
-## License
+```bash
+docker compose exec app composer install
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 5. Generate Application Key
+Generate the unique application security key required by Laravel:
+
+```bash
+docker compose exec app php artisan key:generate
+```
+
+### 6. Run Database Migrations
+Build out your database tables:
+
+```bash
+docker compose exec app php artisan migrate
+```
+
+## 🧙‍♂️ Daily Commands Reference
+Always run your development commands from your project root, using the `docker compose exec app` prefix to route them inside the PHP container.
+
+* Start the environment: `docker compose up -d`
+* Stop the environment: `docker compose down`
+* Run Artisan commands: `docker compose exec app php artisan <command>`
+* Run Composer commands: `docker compose exec app composer <command>`
+* Run Database Seeders: `docker compose exec app php artisan db:seed`
