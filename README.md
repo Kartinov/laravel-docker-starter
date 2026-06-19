@@ -38,8 +38,10 @@ DB_PASSWORD=root
 
 ### 3. Build and Start the Containers
 Run this command to build your custom PHP image and start all services in the background:
+Set your local user and group IDs first so Docker runs the app container with your permissions.
 
 ```bash
+export APP_UID=$(id -u) && export APP_GID=$(id -g)
 docker compose up -d --build
 ```
 
